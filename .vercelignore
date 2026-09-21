@@ -1,0 +1,13 @@
+app/
+requirements.txt
+run.py
+Procfile
+Dockerfile
+nixpacks.toml
+railway.json
+render.yaml
+uploads/
+*.db
+*.py
+__pycache__/
+.venv/
