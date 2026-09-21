@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Feature 6: Light theme overrides ───────────────────────────────────── */
+html.light {
+  --bg-base:    #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-muted:   #e2e8f0;
+  --text-base:  #0f172a;
+  --text-muted: #475569;
+  --border:     #cbd5e1;
+}
+
+html.light body {
+  background-color: var(--bg-base);
+  color: var(--text-base);
+}
+
+html.light .bg-slate-950 { background-color: var(--bg-base) !important; }
+html.light .bg-slate-900 { background-color: var(--bg-surface) !important; }
+html.light .bg-slate-800 { background-color: var(--bg-muted) !important; }
+html.light .border-slate-800 { border-color: var(--border) !important; }
+html.light .border-slate-700 { border-color: var(--border) !important; }
+html.light .text-slate-100 { color: var(--text-base) !important; }
+html.light .text-slate-200 { color: #1e293b !important; }
+html.light .text-slate-300 { color: #334155 !important; }
+html.light .text-slate-400 { color: var(--text-muted) !important; }
+html.light .text-slate-500 { color: #94a3b8 !important; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }

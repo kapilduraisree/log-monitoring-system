@@ -1,37 +1,39 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# Log Security Monitoring System — Python dependencies
+# Log Security Monitoring System — Python dependencies (v2.0 with 10 features)
 # Install with:  pip install -r requirements.txt
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Web framework ─────────────────────────────────────────────────────────────
 fastapi==0.115.5
 uvicorn[standard]==0.32.1
-python-multipart==0.0.12         # required for file uploads (UploadFile)
+python-multipart==0.0.12
 
 # ── Database ──────────────────────────────────────────────────────────────────
 sqlalchemy==2.0.36
-# Uncomment for PostgreSQL:
-# psycopg2-binary==2.9.9
 
 # ── Authentication ────────────────────────────────────────────────────────────
-python-jose[cryptography]==3.3.0  # JWT encode / decode
-passlib[bcrypt]==1.7.4            # bcrypt password hashing
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
 bcrypt==4.2.1
+
+# ── Feature 10: TOTP 2FA ──────────────────────────────────────────────────────
+pyotp==2.9.0
+qrcode[pil]==7.4.2
 
 # ── Validation / settings ─────────────────────────────────────────────────────
 pydantic==2.10.3
-pydantic-settings==2.6.1         # BaseSettings with .env support
-email-validator==2.2.0           # EmailStr field validation
+pydantic-settings==2.6.1
+email-validator==2.2.0
 
 # ── File monitoring ───────────────────────────────────────────────────────────
-watchdog==6.0.0                  # real-time file system events
+watchdog==6.0.0
 
-# ── Data processing ───────────────────────────────────────────────────────────
-# pandas==2.2.3                    # optional: used for bulk log analysis helpers
+# ── Feature 2: IP Geolocation ─────────────────────────────────────────────────
+httpx==0.27.2
 
 # ── PDF reports ───────────────────────────────────────────────────────────────
-reportlab==4.2.5                 # PDF generation
+reportlab==4.2.5
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
-python-dotenv==1.0.1             # load .env in development
-aiofiles==24.1.0                 # async file I/O helpers
+python-dotenv==1.0.1
+aiofiles==24.1.0

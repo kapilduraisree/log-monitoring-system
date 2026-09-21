@@ -1,69 +1,80 @@
-# Log Security Monitoring System
+# Log Security Monitoring System v2.0
 
-A full-stack real-time security log monitoring platform. The backend detects threats in log files using regex-based rules and stores alerts in a database. The frontend displays everything in a dark-themed dashboard with live WebSocket updates.
+A full-stack real-time security log monitoring platform with **10 new features** added on top of the original system.
 
 ---
 
-## 🛠️ Bug Fixes & System Stability Improvements
+## 🆕 10 New Features
 
-This codebase includes the following 7 critical bug fixes and stability enhancements:
-
-1. **IPv6 Extraction Helper (`helpers.py`)**: Added full support for IPv4, standard IPv6, and compressed IPv6 addresses (e.g. `::1`, `2001:db8::1`) with word-token scanning to eliminate invalid substring matches.
-2. **ISO 8601 Timezone Parsing (`log_parser.py`)**: Updated `_parse_iso_ts` to use `datetime.fromisoformat()`, accurately preserving timezone offsets (e.g., `+05:30`).
-3. **Log-Time Brute-Force Tracking (`engine.py`)**: Modified sliding-window brute force heuristics to evaluate threshold attempts using the log event's timestamp float rather than the machine's wall-clock time.
-4. **Binary Windows Log Tailing (`monitor_service.py`)**: Changed file opening mode to `"rb"` in `LogFileHandler`, preventing byte offset corruption from Windows `\r\n` text-mode translations.
-5. **WebSocket Disconnection Cleanup (`monitoring.py`)**: Added `try...finally` error handling to WebSocket connections to prevent socket reference leaks when clients drop.
-6. **Unprefixed WebSocket Route (`main.py`)**: Registered `/ws` directly on FastAPI application to match frontend Vite proxy settings.
-7. **UTC Chart Time Formatting (`log_service.py`)**: Formatted SQLite `strftime` group-by hour results with a `Z` suffix (`%Y-%m-%dT%H:00:00Z`) for proper client-side timezone rendering.
-8. **Native Bcrypt Hashing (`auth_service.py`)**: Replaced `passlib` password hashing with native `bcrypt` functions to eliminate passlib 1.7.4 compatibility crashes with `bcrypt 4.x`.
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | **Email Alert Notifications** | SMTP email sent automatically when CRITICAL/HIGH alerts fire |
+| 2 | **IP Geolocation** | Country, city, lat/lon shown for every attacker IP (ip-api.com) |
+| 3 | **Alert Acknowledgement** | Mark alerts as resolved with reviewer notes; filter by ack status |
+| 4 | **User Activity Audit Log** | Every login, delete, upload, and ack action is recorded (admin view) |
+| 5 | **Scheduled Reports** | Auto-generate and email daily/weekly/monthly PDF reports via cron |
+| 6 | **Dark / Light Theme Toggle** | One-click theme switch with localStorage persistence |
+| 7 | **Alert Suppression Rules** | Whitelist IPs or regex patterns to suppress false positives |
+| 8 | **Multi-file / Directory Monitoring** | Watch unlimited paths simultaneously; add/remove targets live |
+| 9 | **Threat Timeline** | Visual per-IP chronological attack timeline with severity dots |
+| 10 | **Two-Factor Authentication (TOTP)** | TOTP 2FA setup via QR code; required at login when enabled |
 
 ---
 
 ## Tech Stack
 
-| Layer     | Technology                                         |
-|-----------|----------------------------------------------------|
-| Frontend  | React 18, Vite 5, Tailwind CSS 3, Recharts, Axios |
-| Backend   | Python 3.11+, FastAPI, SQLAlchemy, SQLite          |
-| Auth      | JWT (python-jose), bcrypt (passlib)                |
-| Realtime  | WebSockets (FastAPI native)                        |
-| Monitoring| Watchdog (file system events)                      |
-| Reports   | ReportLab (PDF), csv module, json                  |
+| Layer      | Technology |
+|------------|-----------|
+| Frontend   | React 18, Vite 5, Tailwind CSS 3, Recharts, Axios |
+| Backend    | Python 3.11+, FastAPI, SQLAlchemy, SQLite |
+| Auth       | JWT (python-jose), bcrypt, TOTP (pyotp) |
+| Realtime   | WebSockets (FastAPI native) |
+| Monitoring | Watchdog (multi-path) |
+| Geo        | ip-api.com (free, no key) |
+| Reports    | ReportLab (PDF), csv, json |
+| Email      | smtplib (SMTP/TLS) |
 
 ---
 
 ## Project Structure
 
 ```
-project/
-├── backend/
-│   ├── app/
-│   │   ├── api/            # Route handlers (auth, logs, alerts, reports, monitoring)
-│   │   ├── models/         # SQLAlchemy ORM models
-│   │   ├── schemas/        # Pydantic request/response schemas
-│   │   ├── database/       # Engine, session, init_db
-│   │   ├── services/       # Business logic (auth, log, alert, report, monitor, websocket)
-│   │   ├── detector/       # Detection engine, rules, log parser
-│   │   ├── utils/          # Config, logger, helpers, email
-│   │   └── main.py         # FastAPI application entry point
-│   ├── uploads/            # Uploaded log files
-│   ├── requirements.txt
-│   ├── run.py
-│   └── .env.example
-│
-└── frontend/
-    ├── src/
-    │   ├── components/     # Layout, Sidebar, Topbar, StatCard, SeverityBadge, LoadingSpinner
-    │   ├── pages/          # Dashboard, Logs, Alerts, Reports, Settings, Login, Register
-    │   ├── charts/         # SeverityPie, HourlyEvents, TopIPs, AttackCategories
-    │   ├── context/        # AuthContext (JWT state management)
-    │   ├── hooks/          # useDashboard, useLogs, useAlerts, useWebSocket, useMonitor
-    │   ├── services/       # api.js (axios), authService, logService, alertService, etc.
-    │   └── index.css       # Tailwind + custom component classes
-    ├── index.html
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── package.json
+.
+├── app/                        # FastAPI backend
+│   ├── api/                    # Route handlers
+│   │   ├── auth.py             # Register, login, TOTP (F10)
+│   │   ├── logs.py             # Logs CRUD + timeline (F9)
+│   │   ├── alerts.py           # Alerts + acknowledge (F3)
+│   │   ├── reports.py          # PDF/CSV/JSON + email (F1,F5)
+│   │   ├── monitoring.py       # Multi-target monitor (F8)
+│   │   ├── suppression.py      # Suppression rules (F7)
+│   │   ├── audit.py            # Audit log (F4)
+│   │   └── deps.py             # Auth dependencies
+│   ├── models/                 # SQLAlchemy ORM models
+│   ├── schemas/                # Pydantic schemas
+│   ├── database/               # Engine, session, init_db
+│   ├── services/               # Business logic
+│   ├── detector/               # Engine, rules, log_parser
+│   ├── utils/                  # config, logger, helpers, email, geo
+│   └── main.py                 # FastAPI app entry point
+├── src/                        # React frontend
+│   ├── charts/                 # SeverityPie, HourlyEvents, TopIPs, AttackCategories
+│   ├── components/             # Layout, Sidebar, Topbar, StatCard, etc.
+│   ├── context/                # AuthContext, ThemeContext (F6)
+│   ├── hooks/                  # useDashboard, useLogs, useAlerts, useWebSocket, useMonitor
+│   ├── pages/                  # Dashboard, Logs, Alerts, Reports, Settings,
+│   │                           #   Timeline (F9), Suppression (F7), AuditLog (F4)
+│   ├── services/               # api.js + all service modules
+│   ├── App.jsx                 # Router
+│   ├── main.jsx                # React entry
+│   └── index.css               # Tailwind + light/dark theme (F6)
+├── uploads/                    # Uploaded log files
+├── run.py                      # Uvicorn launcher
+├── requirements.txt
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── .env
 ```
 
 ---
@@ -73,47 +84,32 @@ project/
 ### 1 — Backend
 
 ```bash
-cd backend
-
-# Create and activate a virtual environment
+# Create and activate virtual environment
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # macOS/Linux
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Copy and configure environment variables
-copy .env.example .env        # Windows
-# cp .env.example .env        # macOS/Linux
+# Configure environment
+copy .env.example .env          # Windows
+# cp .env.example .env          # macOS/Linux
+# Edit .env with your settings
 
-# Start the development server
+# Start the server
 python run.py
-# or:  uvicorn app.main:app --reload --port 8000
+# API: http://localhost:8000
+# Docs: http://localhost:8000/docs
 ```
-
-The API is now available at **http://localhost:8000**  
-Interactive docs: **http://localhost:8000/docs**
 
 ### 2 — Frontend
 
 ```bash
-cd frontend
-
-# Install dependencies
 npm install
-
-# Copy environment variables
-copy .env.example .env        # Windows
-# cp .env.example .env        # macOS/Linux
-
-# Start the Vite dev server
 npm run dev
+# Open http://localhost:5173
 ```
-
-Open **http://localhost:5173** in your browser.
 
 ### Default Admin Credentials
 
@@ -122,141 +118,123 @@ Open **http://localhost:5173** in your browser.
 | Username | `admin`       |
 | Password | `Admin@12345` |
 
-> Change these in `backend/.env` before deploying to production.
+---
+
+## Environment Variables
+
+```env
+# Database
+DATABASE_URL=sqlite:///./logs_security.db
+
+# Auth
+SECRET_KEY=change-me-to-32-chars
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Admin seed
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=Admin@12345
+
+# CORS
+FRONTEND_URL=http://localhost:5173
+
+# Detection
+ALERT_THRESHOLD=5
+BRUTE_FORCE_WINDOW=300
+MAX_UPLOAD_SIZE_MB=50
+
+# Feature 1: Email alerts
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your@gmail.com
+EMAIL_PASSWORD=app-password
+EMAIL_FROM=your@gmail.com
+EMAIL_TO=admin@company.com
+EMAIL_USE_TLS=true
+
+# Feature 5: Scheduled reports
+REPORT_SCHEDULE_ENABLED=false
+REPORT_SCHEDULE_HOUR=7
+REPORT_EMAIL_TO=
+```
+
+---
+
+## API Endpoints
+
+```
+POST   /api/v1/auth/register
+POST   /api/v1/auth/login           (supports totp_code field)
+GET    /api/v1/auth/me
+POST   /api/v1/auth/logout
+POST   /api/v1/auth/totp/setup      # F10
+POST   /api/v1/auth/totp/verify     # F10
+POST   /api/v1/auth/totp/disable    # F10
+
+GET    /api/v1/logs                 ?page, page_size, severity, event_type, search, sort_desc
+GET    /api/v1/logs/stats
+GET    /api/v1/logs/hourly
+GET    /api/v1/logs/top-ips
+GET    /api/v1/logs/attack-categories
+GET    /api/v1/logs/timeline        ?ip  (F9)
+GET    /api/v1/logs/{id}
+DELETE /api/v1/logs/{id}            (admin)
+
+GET    /api/v1/alerts               ?acknowledged filter (F3)
+GET    /api/v1/alerts/summary
+GET    /api/v1/alerts/critical
+POST   /api/v1/alerts/{id}/acknowledge    (F3)
+POST   /api/v1/alerts/{id}/unacknowledge  (F3)
+
+GET    /api/v1/report               ?period=daily|weekly|monthly
+GET    /api/v1/export/csv
+GET    /api/v1/export/json
+GET    /api/v1/export/pdf
+POST   /api/v1/report/send-email    (F5)
+
+POST   /api/v1/monitor/start
+POST   /api/v1/monitor/stop
+GET    /api/v1/monitor/status
+GET    /api/v1/monitor/targets      (F8)
+POST   /api/v1/monitor/targets      (F8)
+DELETE /api/v1/monitor/targets/{id} (F8)
+POST   /api/v1/upload-log
+
+GET    /api/v1/suppression          (F7)
+POST   /api/v1/suppression          (F7)
+PATCH  /api/v1/suppression/{id}/toggle (F7)
+DELETE /api/v1/suppression/{id}     (F7)
+
+GET    /api/v1/audit                (F4 — admin)
+
+WS     /ws                          real-time alert push
+GET    /health
+```
 
 ---
 
 ## Detection Rules
 
-The engine (`detector/engine.py`) evaluates every log line against 9 rule sets:
-
-| Rule                 | Severity | Example Pattern                          |
-|----------------------|----------|------------------------------------------|
-| Failed Login         | MEDIUM   | `failed login`, `invalid user`           |
-| SSH Auth Failure     | HIGH     | `sshd.*failed`, `too many auth failures` |
-| SQL Injection        | CRITICAL | `UNION SELECT`, `OR 1=1`, `DROP TABLE`   |
-| XSS                  | HIGH     | `<script>`, `onerror=`, `javascript:`    |
-| Brute Force          | CRITICAL | `brute force`, `account locked`          |
-| Port Scan            | MEDIUM   | `nmap`, `port scan`, `masscan`           |
-| Malware              | CRITICAL | `ransomware`, `reverse shell`, `mimikatz`|
-| Suspicious IP        | HIGH     | `blacklisted ip`, `threat intelligence`  |
-| Unauthorized Access  | HIGH     | `access denied`, `sudo.*FAILED`          |
-
-A **brute-force heuristic** also fires automatically when a single IP exceeds `ALERT_THRESHOLD` failed attempts within `BRUTE_FORCE_WINDOW` seconds (configurable in `.env`).
-
----
-
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-| Variable                    | Default                  | Description                          |
-|-----------------------------|--------------------------|--------------------------------------|
-| `DATABASE_URL`              | `sqlite:///./logs_security.db` | Database connection string     |
-| `SECRET_KEY`                | *(change this!)*         | JWT signing key (min 32 chars)       |
-| `ACCESS_TOKEN_EXPIRE_MINUTES`| `1440`                  | Token lifetime (24 h)               |
-| `FRONTEND_URL`              | `http://localhost:5173`  | CORS allowed origin                  |
-| `ADMIN_USERNAME`            | `admin`                  | Seeded admin username                |
-| `ADMIN_PASSWORD`            | `Admin@12345`            | Seeded admin password                |
-| `ALERT_THRESHOLD`           | `5`                      | Failed attempts before brute-force   |
-| `BRUTE_FORCE_WINDOW`        | `300`                    | Detection window in seconds          |
-| `EMAIL_HOST`                | *(optional)*             | SMTP server for alert emails         |
-| `MAX_UPLOAD_SIZE_MB`        | `50`                     | Max uploaded log file size           |
-
-### Frontend (`frontend/.env`)
-
-| Variable             | Default                          |
-|----------------------|----------------------------------|
-| `VITE_API_BASE_URL`  | `http://localhost:8000/api/v1`   |
-| `VITE_WS_URL`        | `ws://localhost:8000/ws`         |
-
----
-
-## Features
-
-### Authentication
-- Register / Login with JWT
-- Role-based access (Admin / User)
-- Tokens stored in `localStorage`, injected on every API request
-- Auto-logout on 401 responses
-
-### Dashboard
-- 7 stat cards: Total Logs, Critical, High, Medium, Low, Info, Today
-- Severity donut chart
-- Events-per-hour area chart (last 24 h)
-- Top attacker IPs horizontal bar chart
-- Attack categories vertical bar chart
-- Live WebSocket alert feed with CRITICAL toast notifications
-- 30-second auto-refresh
-
-### Log Viewer
-- Paginated table (50 per page)
-- Search (debounced 400 ms)
-- Filter by Severity and Event Type
-- Toggle newest/oldest sort
-- Expandable row detail (full message, raw line, source)
-- Admin delete
-
-### Alerts Page
-- 7 summary count cards
-- Filter by Alert Type and Severity
-- Expandable alert detail rows
-
-### Reports
-- Daily / Weekly / Monthly summaries
-- Export as **PDF** (ReportLab), **CSV**, or **JSON**
-- Top event types and top source IPs
-
-### Settings
-- Start/stop real-time Watchdog file monitoring
-- Upload log files (drag & drop, up to 50 MB)
-- Alert threshold and email configuration info
-
----
-
-## API Summary
-
-See **http://localhost:8000/docs** for the full interactive Swagger UI.
-
-Base path: `/api/v1`
-
-```
-POST   /auth/register
-POST   /auth/login
-GET    /auth/me
-POST   /auth/logout
-
-GET    /logs               ?page, page_size, severity, event_type, search, sort_desc
-GET    /logs/stats
-GET    /logs/{id}
-DELETE /logs/{id}          (admin only)
-
-GET    /alerts             ?page, page_size, alert_type, severity
-GET    /alerts/summary
-GET    /alerts/critical    ?limit
-
-GET    /report             ?period=daily|weekly|monthly
-GET    /export/csv         ?period=
-GET    /export/json        ?period=
-GET    /export/pdf         ?period=
-
-POST   /monitor/start      { watch_path, alert_threshold }  (admin)
-POST   /monitor/stop       (admin)
-GET    /monitor/status
-POST   /upload-log         multipart/form-data
-
-WS     /ws                 real-time alert push
-```
+| Rule                 | Severity | Example Pattern |
+|----------------------|----------|----------------|
+| SQL Injection        | CRITICAL | `UNION SELECT`, `OR 1=1` |
+| Brute Force          | CRITICAL | `brute force`, `account locked` |
+| Malware              | CRITICAL | `ransomware`, `mimikatz` |
+| SSH Auth Failure     | HIGH     | `sshd.*failed` |
+| XSS                  | HIGH     | `<script>`, `onerror=` |
+| Suspicious IP        | HIGH     | `blacklisted ip` |
+| Unauthorized Access  | HIGH     | `access denied`, `sudo.*FAILED` |
+| Port Scan            | MEDIUM   | `nmap`, `masscan` |
+| Failed Login         | MEDIUM   | `failed login`, `invalid user` |
 
 ---
 
 ## Production Checklist
 
-- [ ] Change `SECRET_KEY` to a cryptographically random string (`python -c "import secrets; print(secrets.token_hex(32))"`)
-- [ ] Change `ADMIN_PASSWORD` to a strong password
+- [ ] Change `SECRET_KEY` to a random 32+ char string
+- [ ] Change `ADMIN_PASSWORD`
 - [ ] Switch `DATABASE_URL` to PostgreSQL
-- [ ] Set `DEBUG=False`
-- [ ] Serve frontend build (`npm run build`) via nginx or a CDN
-- [ ] Restrict `CORS` `allow_origins` to your actual domain
-- [ ] Configure SMTP for email alerts
-- [ ] Run behind HTTPS (TLS termination at reverse proxy)
+- [ ] Set `FRONTEND_URL` to your domain
+- [ ] Configure SMTP for email alerts (Feature 1)
+- [ ] Enable `REPORT_SCHEDULE_ENABLED=true` (Feature 5)
+- [ ] Serve frontend via `npm run build` + nginx/CDN
+- [ ] Run behind HTTPS (TLS at reverse proxy)
