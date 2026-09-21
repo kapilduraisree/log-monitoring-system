@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { getReport, exportCsv, exportJson, exportPdf, sendReportEmail } from '../services/reportService'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { MdDownload, MdEmail, MdAssessment } from 'react-icons/md'
+import { MdDownload, MdEmail, MdBarChart } from 'react-icons/md'
 import toast from 'react-hot-toast'
 
 const PERIODS = ['daily', 'weekly', 'monthly']
@@ -104,7 +104,7 @@ export default function Reports() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
               <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                <MdAssessment /> Top Event Types
+                <MdBarChart /> Top Event Types
               </h3>
               <div className="space-y-2">
                 {report.top_event_types?.map(item => (

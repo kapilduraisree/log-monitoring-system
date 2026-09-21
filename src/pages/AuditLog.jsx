@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { getAuditLogs } from '../services/auditService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Pagination     from '../components/Pagination'
-import { MdHistory, MdSearch } from 'react-icons/md'
+import { MdManageSearch } from 'react-icons/md'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 
@@ -47,7 +47,7 @@ export default function AuditLog() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-        <MdHistory className="text-blue-400" /> Audit Log
+        <MdManageSearch className="text-blue-400" /> Audit Log
       </h1>
 
       {/* Filters */}

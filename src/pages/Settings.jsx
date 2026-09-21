@@ -13,7 +13,7 @@ import {
   startMonitor, stopMonitor, uploadLog, addTarget, removeTarget,
 } from '../services/monitorService'
 import { setupTotp, verifyTotp, disableTotp } from '../services/authService'
-import { MdPlay, MdStop, MdUpload, MdDelete, MdAdd, MdQrCode, MdShield } from 'react-icons/md'
+import { MdPlayArrow, MdStop, MdUpload, MdDelete, MdAdd, MdQrCodeScanner, MdShield } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -99,7 +99,7 @@ export default function Settings() {
           <input value={watchPath} onChange={e => setWatchPath(e.target.value)}
             placeholder="Path to watch (e.g. C:\logs)"
             className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500" />
-          <button onClick={handleStart} className="flex items-center gap-1 px-3 py-2 bg-green-700 hover:bg-green-600 rounded-lg text-sm text-white"><MdPlay /> Start</button>
+          <button onClick={handleStart} className="flex items-center gap-1 px-3 py-2 bg-green-700 hover:bg-green-600 rounded-lg text-sm text-white"><MdPlayArrow /> Start</button>
           <button onClick={handleStop}  className="flex items-center gap-1 px-3 py-2 bg-red-700 hover:bg-red-600 rounded-lg text-sm text-white"><MdStop /> Stop All</button>
         </div>
         {/* Feature 8: Multi-target list */}
@@ -146,7 +146,7 @@ export default function Settings() {
       {/* ── Feature 10: TOTP 2FA ─────────────────────────────────────────── */}
       <section className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
         <h2 className="font-semibold text-slate-200 flex items-center gap-2">
-          <MdShield className="text-blue-400" /> Two-Factor Authentication (2FA)
+              <MdShield className="text-blue-400" /> Two-Factor Authentication (2FA)
         </h2>
         <p className="text-sm text-slate-400">
           Status: <span className={user?.totp_enabled ? 'text-green-400' : 'text-slate-500'}>
@@ -159,7 +159,7 @@ export default function Settings() {
             {!totpSetup ? (
               <button onClick={handleTotpSetup} disabled={totpLoading}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 rounded-lg text-sm text-white">
-                <MdQrCode /> {totpLoading ? 'Generating…' : 'Setup 2FA'}
+                <MdQrCodeScanner /> {totpLoading ? 'Generating…' : 'Setup 2FA'}
               </button>
             ) : (
               <div className="space-y-3">

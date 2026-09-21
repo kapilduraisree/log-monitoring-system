@@ -1,11 +1,11 @@
-/**
- * Feature 9: Threat Timeline — visual per-IP attack timeline.
+﻿/**
+ * Feature 9: Threat Timeline â€” visual per-IP attack timeline.
  */
 import { useState, useEffect } from 'react'
 import { getTimeline } from '../services/logService'
 import SeverityBadge  from '../components/SeverityBadge'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { MdSearch, MdTimeline, MdPublic } from 'react-icons/md'
+import { MdSearch, MdAccessTime, MdLanguage } from 'react-icons/md'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 
@@ -48,13 +48,13 @@ export default function Timeline() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-          <MdTimeline className="text-blue-400" /> Threat Timeline
+          <MdAccessTime className="text-blue-400" /> Threat Timeline
         </h1>
         <div className="flex gap-2">
           <input
             value={search} onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="Filter by IP…"
+            placeholder="Filter by IPâ€¦"
             className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
           />
           <button onClick={handleSearch}
@@ -79,7 +79,7 @@ export default function Timeline() {
                 <span className="text-yellow-400 font-mono font-bold">{srcIp}</span>
                 {ipEvents[0]?.geo_country && (
                   <span className="flex items-center gap-1 text-xs text-slate-400">
-                    <MdPublic className="text-blue-400" />
+                    <MdLanguage className="text-blue-400" />
                     {ipEvents[0].geo_city ? `${ipEvents[0].geo_city}, ` : ''}
                     {ipEvents[0].geo_country}
                   </span>
@@ -117,7 +117,7 @@ export default function Timeline() {
 
           {Object.keys(grouped).length === 0 && (
             <div className="text-center py-20 text-slate-500">
-              <MdTimeline className="text-5xl mx-auto mb-3 opacity-30" />
+              <MdAccessTime className="text-5xl mx-auto mb-3 opacity-30" />
               No security events found{ip ? ` for IP ${ip}` : ''}
             </div>
           )}

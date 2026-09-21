@@ -8,8 +8,8 @@ import HourlyEvents      from '../charts/HourlyEvents'
 import TopIPs            from '../charts/TopIPs'
 import AttackCategories  from '../charts/AttackCategories'
 import {
-  MdRefresh, MdSecurity, MdWarning, MdError,
-  MdInfo, MdToday, MdList,
+  MdRefresh, MdWarning, MdErrorOutline,
+  MdInfoOutline, MdCalendarToday, MdFormatListBulleted,
 } from 'react-icons/md'
 import { format } from 'date-fns'
 
@@ -38,13 +38,13 @@ export default function Dashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <StatCard label="Total"    value={stats?.total}    color="blue"   icon={MdList} />
-        <StatCard label="Critical" value={stats?.CRITICAL} color="red"    icon={MdError} />
+        <StatCard label="Total"    value={stats?.total}    color="blue"   icon={MdFormatListBulleted} />
+        <StatCard label="Critical" value={stats?.CRITICAL} color="red"    icon={MdErrorOutline} />
         <StatCard label="High"     value={stats?.HIGH}     color="orange" icon={MdWarning} />
-        <StatCard label="Medium"   value={stats?.MEDIUM}   color="yellow" icon={MdSecurity} />
-        <StatCard label="Low"      value={stats?.LOW}      color="green"  icon={MdSecurity} />
-        <StatCard label="Info"     value={stats?.INFO}     color="slate"  icon={MdInfo} />
-        <StatCard label="Today"    value={stats?.today}    color="blue"   icon={MdToday} />
+        <StatCard label="Medium"   value={stats?.MEDIUM}   color="yellow" icon={MdWarning} />
+        <StatCard label="Low"      value={stats?.LOW}      color="green"  icon={MdWarning} />
+        <StatCard label="Info"     value={stats?.INFO}     color="slate"  icon={MdInfoOutline} />
+        <StatCard label="Today"    value={stats?.today}    color="blue"   icon={MdCalendarToday} />
       </div>
 
       {/* Charts row 1 */}

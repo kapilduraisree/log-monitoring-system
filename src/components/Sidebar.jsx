@@ -1,17 +1,17 @@
 import { NavLink } from 'react-router-dom'
 import {
-  MdDashboard, MdList, MdWarning, MdAssessment,
-  MdSettings, MdTimeline, MdBlock, MdHistory, MdShield,
+  MdDashboard, MdFormatListBulleted, MdWarning, MdBarChart,
+  MdSettings, MdAccessTime, MdBlock, MdManageSearch, MdShield,
 } from 'react-icons/md'
 
 const links = [
   { to: '/',           label: 'Dashboard',  icon: MdDashboard },
-  { to: '/logs',       label: 'Logs',       icon: MdList },
+  { to: '/logs',       label: 'Logs',       icon: MdFormatListBulleted },
   { to: '/alerts',     label: 'Alerts',     icon: MdWarning },
-  { to: '/timeline',   label: 'Timeline',   icon: MdTimeline },
-  { to: '/reports',    label: 'Reports',    icon: MdAssessment },
+  { to: '/timeline',   label: 'Timeline',   icon: MdAccessTime },
+  { to: '/reports',    label: 'Reports',    icon: MdBarChart },
   { to: '/suppression',label: 'Suppression',icon: MdBlock },
-  { to: '/audit',      label: 'Audit Log',  icon: MdHistory },
+  { to: '/audit',      label: 'Audit Log',  icon: MdManageSearch },
   { to: '/settings',   label: 'Settings',   icon: MdSettings },
 ]
 

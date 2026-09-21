@@ -5,7 +5,7 @@ import { deleteLog }     from '../services/logService'
 import SeverityBadge     from '../components/SeverityBadge'
 import LoadingSpinner    from '../components/LoadingSpinner'
 import Pagination        from '../components/Pagination'
-import { MdSearch, MdDelete, MdExpandMore, MdExpandLess, MdPublic } from 'react-icons/md'
+import { MdSearch, MdDelete, MdExpandMore, MdExpandLess, MdLanguage } from 'react-icons/md'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 
@@ -105,7 +105,7 @@ export default function Logs() {
                       {/* Feature 2: show geo */}
                       {log.geo_country ? (
                         <span className="flex items-center gap-1">
-                          <MdPublic className="text-blue-400" />
+                          <MdLanguage className="text-blue-400" />
                           {log.geo_city ? `${log.geo_city}, ` : ''}{log.geo_country}
                         </span>
                       ) : '—'}
