@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: log-monitor-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./logs_security.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        value: Admin@12345
+      - key: ALERT_THRESHOLD
+        value: "5"
+      - key: BRUTE_FORCE_WINDOW
+        value: "300"
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "50"
+      - key: FRONTEND_URL
+        value: https://your-vercel-app.vercel.app
